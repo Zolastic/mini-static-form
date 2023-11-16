@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -8,9 +6,9 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/components/ui/use-toast";
 
-export default function login() {
+export default function Login() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") || "/";
+  const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -20,7 +18,7 @@ export default function login() {
   // To Handle Login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!username || !password) {
+    if (!username ?? !password) {
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -53,7 +51,7 @@ export default function login() {
           duration: 5000,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -68,7 +66,7 @@ export default function login() {
       <div>
         <h1 className="flex flex-col items-center justify-center text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           <p>
-            Welcome to <span className="text-red-400">Nhat Tien's</span>
+            Welcome to <span className="text-red-400">Nhat Tien</span>
           </p>
           <p>Static Google Form.</p>
           <p className="my-5"></p>
