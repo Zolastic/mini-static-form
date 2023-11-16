@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
           credentials?.username === "admin" &&
           credentials?.password === "admin"
         ) {
-          return Promise.resolve({ id: 1, name: "Admin" }) as any;
+          return Promise.resolve({ id: "1", name: "Admin" });
         } else {
           return Promise.resolve(null);
         }
