@@ -6,6 +6,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
@@ -48,10 +49,10 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(db),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
     /**
      * ...add more providers here.
      *
@@ -61,6 +62,31 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: {
+          label: "Username: ",
+          type: "text",
+          placeholder: "your cool username",
+        },
+        password: {
+          label: "Password: ",
+          type: "password",
+          placeholder: "your awesome password",
+        },
+      },
+      async authorize(credentials) {
+        if (
+          credentials?.username === "admin" &&
+          credentials?.password === "admin"
+        ) {
+          return Promise.resolve({ id: 1, name: "Admin" }) as any;
+        } else {
+          return Promise.resolve(null);
+        }
+      },
+    }),
   ],
 };
 
