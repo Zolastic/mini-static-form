@@ -11,16 +11,16 @@ import { useToast } from "~/components/ui/use-toast";
 export default function login() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") || "/";
-  const [username, setUsername] = useState<String>("");
-  const [password, setPassword] = useState<String>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const router = useRouter();
   const { toast } = useToast();
 
   // To Handle Login
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (username === "" || password === "") {
+    if (!username || !password) {
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -82,14 +82,14 @@ export default function login() {
         <Input
           type="text"
           placeholder="Username"
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setUsername(e.target.value);
           }}
         />
         <Input
           type="password"
           placeholder="Password"
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
           }}
         />
