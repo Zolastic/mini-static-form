@@ -5,12 +5,14 @@ import { signIn } from "next-auth/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/components/ui/use-toast";
+import { LoadingSpinner } from "~/components/loading";
 
 export default function Login() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -18,7 +20,9 @@ export default function Login() {
   // To Handle Login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!username ?? !password) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -36,6 +40,7 @@ export default function Login() {
       });
 
       if (!result?.error) {
+        setIsLoading(false);
         router.push(callbackUrl);
         toast({
           variant: "success",
@@ -44,6 +49,7 @@ export default function Login() {
           duration: 5000,
         });
       } else {
+        setIsLoading(false);
         toast({
           variant: "destructive",
           title: "Invalid Credentials",
@@ -52,6 +58,7 @@ export default function Login() {
         });
       }
     } catch (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -91,7 +98,15 @@ export default function Login() {
             setPassword(e.target.value);
           }}
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <span className="flex h-[20px] w-[39.667px] items-center justify-center">
+              <LoadingSpinner />
+            </span>
+          ) : (
+            <span className="font-bold tracking-wide">Login</span>
+          )}
+        </Button>
       </form>
     </section>
   );
