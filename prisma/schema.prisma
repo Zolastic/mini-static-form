@@ -47,6 +47,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  forms         Form[]
 }
 
 model VerificationRequest {
@@ -60,3 +61,13 @@ model VerificationRequest {
   @@unique([identifier, token])
 }
 
+model Form {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  questions Json    @default("{}")
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+}
