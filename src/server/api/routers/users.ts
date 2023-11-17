@@ -11,20 +11,18 @@ export const usersRouter = createTRPCRouter({
         username: z.string(),
       }),
     )
-    .query(
-      async ({ ctx, input }: { ctx: any; input: { username: string } }) => {
-        const user: User | null = await ctx.db.user.findUnique({
-          where: { name: input.username },
+    .query(async ({ ctx, input }) => {
+      const user: User | null = await ctx.db.user.findUnique({
+        where: { name: input.username },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
         });
-        if (!user) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "User not found",
-          });
-        }
-        return user;
-      },
-    ),
+      }
+      return user;
+    }),
 
   loginAuthentication: publicProcedure
     .input(
