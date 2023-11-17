@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import type { User } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export const usersRouter = createTRPCRouter({
   // Read
@@ -11,11 +13,14 @@ export const usersRouter = createTRPCRouter({
     )
     .query(
       async ({ ctx, input }: { ctx: any; input: { username: string } }) => {
-        const user = await ctx.db.user.findUnique({
+        const user: User | null = await ctx.db.user.findUnique({
           where: { name: input.username },
         });
         if (!user) {
-          throw ctx.httpError.notFound();
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "User not found",
+          });
         }
         return user;
       },
@@ -28,26 +33,24 @@ export const usersRouter = createTRPCRouter({
         password: z.string(),
       }),
     )
-    .mutation(
-      async ({
-        ctx,
-        input,
-      }: {
-        ctx: any;
-        input: { username: string; password: string };
-      }) => {
-        const user = await ctx.db.user.findUnique({
-          where: { name: input.username },
+    .mutation(async ({ ctx, input }) => {
+      const user: User | null = await ctx.db.user.findUnique({
+        where: { name: input.username },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Incorrect username or password",
         });
-        if (!user) {
-          throw ctx.httpError.notFound();
-        }
-        if (user.password !== input.password) {
-          throw ctx.httpError.notFound();
-        }
-        return user;
-      },
-    ),
+      }
+      if (user.password !== input.password) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Incorrect username or password",
+        });
+      }
+      return user;
+    }),
 
   // Create
   create: publicProcedure
@@ -57,23 +60,15 @@ export const usersRouter = createTRPCRouter({
         password: z.string(),
       }),
     )
-    .mutation(
-      async ({
-        ctx,
-        input,
-      }: {
-        ctx: any;
-        input: { username: string; password: string };
-      }) => {
-        const user = await ctx.db.user.create({
-          data: {
-            name: input.username,
-            password: input.password,
-            createdAt: new Date(),
-          },
-        });
+    .mutation(async ({ ctx, input }) => {
+      const user: User | null = await ctx.db.user.create({
+        data: {
+          name: input.username,
+          password: input.password,
+          createdAt: new Date(),
+        },
+      });
 
-        return user;
-      },
-    ),
+      return user;
+    }),
 });
