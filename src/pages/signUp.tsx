@@ -1,29 +1,57 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/components/ui/use-toast";
 import { LoadingSpinner } from "~/components/loading";
 import Link from "next/link";
+import { api } from "~/utils/api";
 
 export default function SignUp() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const { toast } = useToast();
 
-  // To Handle Login
+  // To Handle Sign Up
+
+  const { mutate, isLoading: isRegistering } = api.users.create.useMutation({
+    onSuccess: () => {
+      setUsername("");
+      setPassword("");
+      toast({
+        variant: "success",
+        title: "Registration Successful",
+        description: "You have successfully registered.",
+        duration: 5000,
+      });
+      router.push("/login");
+    },
+    onError: (error) => {
+      const errorMessage = error?.data?.zodError?.fieldErrors.content;
+      if (errorMessage?.[0]) {
+        toast({
+          variant: "destructive",
+          title: "Registration Fail!",
+          description: `${errorMessage[0]}`,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Registration Fail!",
+          description: `Please try again!`,
+          duration: 5000,
+        });
+      }
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    if (!username ?? !password) {
-      setIsLoading(false);
+    if (!username || !password) {
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -32,6 +60,8 @@ export default function SignUp() {
       });
       return;
     }
+
+    mutate({ username: username, password: password });
   };
 
   return (
@@ -64,8 +94,8 @@ export default function SignUp() {
             setPassword(e.target.value);
           }}
         />
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? (
+        <Button type="submit" disabled={isRegistering}>
+          {isRegistering ? (
             <span className="flex h-[20px] w-[60.203px] items-center justify-center">
               <LoadingSpinner />
             </span>
@@ -81,7 +111,7 @@ export default function SignUp() {
             Already have an account?
           </span>
         </div>
-        <Link href={"/signUp"}>
+        <Link href={"/login"}>
           <h1 className="tracking-wide text-slate-600 hover:cursor-pointer hover:text-red-400">
             Log in!
           </h1>
