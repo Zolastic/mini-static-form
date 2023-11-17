@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { User } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
@@ -79,14 +80,16 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        if (
-          credentials?.username === "admin" &&
-          credentials?.password === "admin"
-        ) {
-          return Promise.resolve({ id: "1", name: "Admin" });
-        } else {
-          return Promise.resolve(null);
+        const user: User | null = await db.user.findUnique({
+          where: { name: credentials!.username },
+        });
+        if (!user) {
+          throw new Error("User not found");
         }
+        if (user.password !== credentials!.password) {
+          throw new Error("Incorrect username or password");
+        }
+        return user;
       },
     }),
   ],

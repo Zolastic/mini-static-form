@@ -1,60 +1,29 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/components/ui/use-toast";
 import { LoadingSpinner } from "~/components/loading";
 import Link from "next/link";
-import { api } from "~/utils/api";
 
 export default function Login() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutate, isLoading: isAuthenticating } =
-    api.users.loginAuthentication.useMutation({
-      onSuccess: () => {
-        setUsername("");
-        setPassword("");
-        toast({
-          variant: "success",
-          title: "Login Successful",
-          description: "You have successfully logged in.",
-          duration: 5000,
-        });
-        router.push(callbackUrl);
-      },
-
-      onError: (error) => {
-        const errorMessage = error?.data?.zodError?.fieldErrors.content;
-        if (errorMessage?.[0]) {
-          toast({
-            variant: "destructive",
-            title: "Login Fail!",
-            description: `${errorMessage[0]}`,
-            duration: 5000,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Login Fail!",
-            description: `Please try again!`,
-            duration: 5000,
-          });
-        }
-      },
-    });
-
   // To Handle Login
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!username ?? !password) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Invalid Credentials",
@@ -64,7 +33,40 @@ export default function Login() {
       return;
     }
 
-    mutate({ username: username, password: password });
+    try {
+      const result = await signIn("credentials", {
+        username,
+        password,
+        redirect: false,
+      });
+
+      if (!result?.error) {
+        setIsLoading(false);
+        router.push(callbackUrl);
+        toast({
+          variant: "success",
+          title: "Login Successful",
+          description: "You have successfully logged in.",
+          duration: 5000,
+        });
+      } else {
+        setIsLoading(false);
+        toast({
+          variant: "destructive",
+          title: "Invalid Credentials",
+          description: "Username or password is incorrect.",
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Invalid Credentials",
+        description: "Ensure ",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -97,8 +99,8 @@ export default function Login() {
             setPassword(e.target.value);
           }}
         />
-        <Button type="submit" disabled={isAuthenticating}>
-          {isAuthenticating ? (
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
             <span className="flex h-[20px] w-[39.667px] items-center justify-center">
               <LoadingSpinner />
             </span>

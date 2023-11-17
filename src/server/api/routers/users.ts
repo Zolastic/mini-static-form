@@ -24,32 +24,6 @@ export const usersRouter = createTRPCRouter({
       return user;
     }),
 
-  loginAuthentication: publicProcedure
-    .input(
-      z.object({
-        username: z.string(),
-        password: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const user: User | null = await ctx.db.user.findUnique({
-        where: { name: input.username },
-      });
-      if (!user) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Incorrect username or password",
-        });
-      }
-      if (user.password !== input.password) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Incorrect username or password",
-        });
-      }
-      return user;
-    }),
-
   // Create
   create: publicProcedure
     .input(
