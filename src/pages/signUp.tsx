@@ -8,7 +8,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { LoadingSpinner } from "~/components/loading";
 import Link from "next/link";
 
-export default function Login() {
+export default function SignUp() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
   const [username, setUsername] = useState<string>("");
@@ -32,41 +32,6 @@ export default function Login() {
       });
       return;
     }
-
-    try {
-      const result = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
-      });
-
-      if (!result?.error) {
-        setIsLoading(false);
-        router.push(callbackUrl);
-        toast({
-          variant: "success",
-          title: "Login Successful",
-          description: "You have successfully logged in.",
-          duration: 5000,
-        });
-      } else {
-        setIsLoading(false);
-        toast({
-          variant: "destructive",
-          title: "Invalid Credentials",
-          description: "Username or password is incorrect.",
-          duration: 5000,
-        });
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast({
-        variant: "destructive",
-        title: "Invalid Credentials",
-        description: "Ensure ",
-        duration: 5000,
-      });
-    }
   };
 
   return (
@@ -78,7 +43,7 @@ export default function Login() {
           </p>
           <p>Static Google Form.</p>
           <p className="my-5"></p>
-          <p className="font-bold tracking-wide">Login</p>
+          <p className="font-bold tracking-wide">Sign Up</p>
         </h1>
       </div>
       <form
@@ -101,11 +66,11 @@ export default function Login() {
         />
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
-            <span className="flex h-[20px] w-[39.667px] items-center justify-center">
+            <span className="flex h-[20px] w-[60.203px] items-center justify-center">
               <LoadingSpinner />
             </span>
           ) : (
-            <span className="font-bold tracking-wide">Login</span>
+            <span className="font-bold tracking-wide">Sign Up!</span>
           )}
         </Button>
       </form>
@@ -113,12 +78,12 @@ export default function Login() {
         <div className="inline-flex w-full items-center justify-center">
           <div className="my-8 h-px w-64 border-0 bg-gray-200 dark:bg-gray-700"></div>
           <span className="absolute left-1/2 -translate-x-1/2 bg-white px-3 font-medium text-muted-foreground">
-            Don't have an account?
+            Already have an account?
           </span>
         </div>
         <Link href={"/signUp"}>
           <h1 className="tracking-wide text-slate-600 hover:cursor-pointer hover:text-red-400">
-            Sign Up!
+            Log in!
           </h1>
         </Link>
       </div>
