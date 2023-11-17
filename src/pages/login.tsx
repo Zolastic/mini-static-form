@@ -52,7 +52,7 @@ export default function Login() {
     });
 
   // To Handle Login
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!username ?? !password) {
       toast({
