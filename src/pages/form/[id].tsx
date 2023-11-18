@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const Form = (props: Props) => {
+const Form = () => {
   return <div>[id]</div>;
 };
 
