@@ -2,8 +2,43 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { api } from "~/utils/api";
+import { useRouter } from "next/navigation";
+import { toast } from "~/components/ui/use-toast";
+import formImage from "../../public/form.png";
 
 export default function Home() {
+  const router = useRouter();
+
+  const { data: forms } = api.forms.getAll.useQuery();
+  const { mutate, isLoading } = api.forms.create.useMutation({
+    onSuccess: (data) => {
+      // data is the argument to the onSuccess callback
+      console.log("onSuccess", data);
+      router.push(`/form/${data.id}`);
+      toast({
+        variant: "success",
+        title: "Form Created",
+        description: "You have successfully created a new form.",
+        duration: 5000,
+      });
+    },
+
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error Creating New Form",
+        description: error.message,
+        duration: 5000,
+      });
+    },
+  });
+
+  const createNewForm = () => {
+    console.log("createNewForm");
+    mutate();
+  };
+
   return (
     <>
       <Head>
@@ -16,18 +51,47 @@ export default function Home() {
           <h1 className="text-muted">Start a new Form</h1>
           <div className="flex items-center justify-center">
             <div className="flex flex-col items-start justify-center">
-              <Link href={"/form"}>
-                <Image
-                  src={"/forms-blank-googlecolors.png"}
-                  alt="add new form"
-                  width={192}
-                  height={192}
-                  className="my-3 rounded border border-gray-300 hover:cursor-pointer hover:border-slate-900"
-                />
-              </Link>
+              <Image
+                src={"/forms-blank-googlecolors.png"}
+                alt="add new form"
+                width={192}
+                height={192}
+                className="my-3 rounded border border-gray-300 hover:cursor-pointer hover:border-slate-900"
+                onClick={createNewForm}
+              />
               <h1 className="text-muted">New form</h1>
             </div>
           </div>
+        </div>
+        <div className="flex w-full flex-col items-start justify-center px-96 py-5">
+          <h1 className="text-xl font-semibold">Recent Forms</h1>
+          {forms?.length ? (
+            <div className="flex flex-wrap items-start justify-center">
+              {forms.map((form) => {
+                return (
+                  <div
+                    key={form.id}
+                    className="mb-10 mr-10 flex flex-col rounded border hover:cursor-pointer hover:border-slate-900"
+                  >
+                    <Link href={`/form/${form.id}`}>
+                      <Image
+                        src={formImage.src}
+                        alt={form.name}
+                        width={192}
+                        height={192}
+                        className="border-b"
+                      />
+                    </Link>
+                    <h1 className="p-3 text-muted-foreground">{form.name}</h1>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-3 flex flex-col items-center justify-center">
+              <h1 className="text-muted-foreground">No form found</h1>
+            </div>
+          )}
         </div>
         <AuthShowcase />
       </main>
