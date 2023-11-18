@@ -7,11 +7,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+
+import CheckBoxQuestion from "~/components/checkboxQuestion";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -170,6 +171,21 @@ const Form = () => {
               value={responses[1]?.response ?? ""}
               placeholder="Your answer"
               onChange={onChangeResponse(1)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Question 3 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>Do you like to do any of these?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CheckBoxQuestion
+              response={responses[2]?.response ?? ""}
+              onChangeResponse={onChangeResponse(2)}
             />
           </CardContent>
         </Card>
