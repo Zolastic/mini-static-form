@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const formsRouter = createTRPCRouter({
@@ -6,6 +7,16 @@ export const formsRouter = createTRPCRouter({
       take: 100,
     });
   }),
+
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.form.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const form = await ctx.db.form.create({
