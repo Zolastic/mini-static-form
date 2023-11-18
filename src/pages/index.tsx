@@ -11,7 +11,7 @@ export default function Home() {
   const router = useRouter();
 
   const { data: forms } = api.forms.getAll.useQuery();
-  const { mutate, isLoading } = api.forms.create.useMutation({
+  const { mutate } = api.forms.create.useMutation({
     onSuccess: (data) => {
       // data is the argument to the onSuccess callback
       console.log("onSuccess", data);

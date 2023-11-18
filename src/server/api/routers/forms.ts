@@ -40,5 +40,31 @@ export const formsRouter = createTRPCRouter({
 
     return form;
   }),
+
+  updateName: protectedProcedure
+    .input(z.object({ id: z.string(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.form.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
+
+  updateDescription: protectedProcedure
+    .input(z.object({ id: z.string(), description: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.form.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          description: input.description,
+        },
+      });
+    }),
 });
 ``;

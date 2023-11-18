@@ -11,4 +11,22 @@ export const responsesRouter = createTRPCRouter({
         },
       });
     }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        response: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.response.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          response: input.response,
+        },
+      });
+    }),
 });
