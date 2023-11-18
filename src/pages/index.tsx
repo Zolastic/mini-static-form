@@ -10,7 +10,7 @@ import formImage from "../../public/form.png";
 export default function Home() {
   const router = useRouter();
 
-  const { data: forms } = api.forms.getAll.useQuery();
+  const { data: forms } = api.forms.getByUserId.useQuery();
   const { mutate } = api.forms.create.useMutation({
     onSuccess: (data) => {
       // data is the argument to the onSuccess callback

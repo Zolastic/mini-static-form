@@ -54,6 +54,12 @@ const DropDownQuestion = ({ response, onChangeResponse }: Props) => {
     } as React.ChangeEvent<HTMLInputElement>);
   }, [value]);
 
+  useEffect(() => {
+    if (response && response !== value) {
+      setValue(response);
+    }
+  }, [response]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

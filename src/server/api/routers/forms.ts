@@ -8,6 +8,15 @@ export const formsRouter = createTRPCRouter({
     });
   }),
 
+  getByUserId: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.form.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      take: 100,
+    });
+  }),
+
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
