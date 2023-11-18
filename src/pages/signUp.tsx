@@ -11,43 +11,43 @@ import { api } from "~/utils/api";
 export default function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
-  const router = useRouter();
   const { toast } = useToast();
 
   // To Handle Sign Up
 
-  const { mutate, isLoading: isRegistering } = api.users.create.useMutation({
-    onSuccess: () => {
-      setUsername("");
-      setPassword("");
-      toast({
-        variant: "success",
-        title: "Registration Successful",
-        description: "You have successfully registered.",
-        duration: 5000,
-      });
-      router.push("/login");
-    },
-    onError: (error) => {
-      const errorMessage = error?.data?.zodError?.fieldErrors.content;
-      if (errorMessage?.[0]) {
-        toast({
-          variant: "destructive",
-          title: "Registration Fail!",
-          description: `${errorMessage[0]}`,
-          duration: 5000,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Registration Fail!",
-          description: `Please try again!`,
-          duration: 5000,
-        });
-      }
-    },
-  });
+  // const { mutate, isLoading: isRegistering } = api.users.create.useMutation({
+  //   onSuccess: () => {
+  //     setUsername("");
+  //     setPassword("");
+  //     toast({
+  //       variant: "success",
+  //       title: "Registration Successful",
+  //       description: "You have successfully registered.",
+  //       duration: 5000,
+  //     });
+  //     router.push("/login");
+  //   },
+  //   onError: (error) => {
+  //     const errorMessage = error?.data?.zodError?.fieldErrors.content;
+  //     if (errorMessage?.[0]) {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Registration Fail!",
+  //         description: `${errorMessage[0]}`,
+  //         duration: 5000,
+  //       });
+  //     } else {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Registration Fail!",
+  //         description: `Please try again!`,
+  //         duration: 5000,
+  //       });
+  //     }
+  //   },
+  // });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ export default function SignUp() {
       return;
     }
 
-    mutate({ username: username, password: password });
+    // mutate({ username: username, password: password });
   };
 
   return (

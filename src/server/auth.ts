@@ -1,12 +1,12 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { User } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "~/server/db";
 
@@ -47,6 +47,9 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(db),
+  // pages: {
+  //   signIn: "/login",
+  // },
   providers: [
     // DiscordProvider({
     //   clientId: env.DISCORD_CLIENT_ID,
@@ -61,37 +64,42 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
-    // GitHubProvider({
-    //   clientId: process.env.GITHUB_ID as string,
-    //   clientSecret: process.env.GITHUB_SECRET as string,
-    // }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: {
-          label: "Username: ",
-          type: "text",
-          placeholder: "your cool username",
-        },
-        password: {
-          label: "Password: ",
-          type: "password",
-          placeholder: "your awesome password",
-        },
-      },
-      async authorize(credentials) {
-        const user: User | null = await db.user.findUnique({
-          where: { name: credentials!.username },
-        });
-        if (!user) {
-          throw new Error("User not found");
-        }
-        if (user.password !== credentials!.password) {
-          throw new Error("Incorrect username or password");
-        }
-        return user;
-      },
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     username: {
+    //       label: "Username: ",
+    //       type: "text",
+    //       placeholder: "your cool username",
+    //     },
+    //     password: {
+    //       label: "Password: ",
+    //       type: "password",
+    //       placeholder: "your awesome password",
+    //     },
+    //   },
+    //   async authorize(credentials) {
+    //     const user: User | null = await db.user.findUnique({
+    //       where: { name: credentials!.username },
+    //     });
+    //     if (!user) {
+    //       throw new Error("User not found");
+    //     }
+    //     if (user.password !== credentials!.password) {
+    //       throw new Error("Incorrect username or password");
+    //     }
+    //     return user;
+    //   },
+    // }),
   ],
 };
 
