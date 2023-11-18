@@ -13,8 +13,8 @@ import {
 import { Input } from "~/components/ui/input";
 
 import CheckBoxQuestion from "~/components/checkboxQuestion";
-import { Radio } from "lucide-react";
 import RadioQuestion from "~/components/radioQuestion";
+import DropDownQuestion from "~/components/dropdownQuestion";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -207,6 +207,22 @@ const Form = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Question 5 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>What is your favourite sport?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DropDownQuestion
+              response={responses[4]?.response ?? ""}
+              onChangeResponse={onChangeResponse(4)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mb-10"></div>
     </>
   );
 };
