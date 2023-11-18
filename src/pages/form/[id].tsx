@@ -13,6 +13,8 @@ import {
 import { Input } from "~/components/ui/input";
 
 import CheckBoxQuestion from "~/components/checkboxQuestion";
+import { Radio } from "lucide-react";
+import RadioQuestion from "~/components/radioQuestion";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -186,6 +188,21 @@ const Form = () => {
             <CheckBoxQuestion
               response={responses[2]?.response ?? ""}
               onChangeResponse={onChangeResponse(2)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Question 4 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>What is your gender?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadioQuestion
+              response={responses[3]?.response ?? ""}
+              onChangeResponse={onChangeResponse(3)}
             />
           </CardContent>
         </Card>
