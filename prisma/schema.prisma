@@ -66,9 +66,10 @@ model Form {
 }
 
 model Response {
-  id         String @id @default(cuid())
-  questionId String
-  response   String
-  formId     String
-  form       Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  id           String @id @default(cuid())
+  questionId   Int
+  questionType String
+  response     String
+  formId       String
+  form         Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
 }
