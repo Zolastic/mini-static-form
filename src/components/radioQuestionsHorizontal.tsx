@@ -32,6 +32,7 @@ const RadioQuestionHorizontal = ({ response, onChangeResponse }: Props) => {
   return (
     <>
       <RadioGroup
+        key={response}
         defaultValue={response}
         onValueChange={handleChange}
         className="flex space-x-16"

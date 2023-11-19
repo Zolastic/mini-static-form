@@ -41,7 +41,11 @@ const RadioQuestion = ({ response, onChangeResponse }: Props) => {
 
   return (
     <>
-      <RadioGroup defaultValue={response} onValueChange={handleChange}>
+      <RadioGroup
+        key={response}
+        defaultValue={response}
+        onValueChange={handleChange}
+      >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="male" id="male" />
           <Label htmlFor="male">Male</Label>
