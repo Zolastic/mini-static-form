@@ -110,14 +110,10 @@ const Form = () => {
 
   useEffect(() => {
     if (!isLoadingResponsesFromDb && responsesFromDb) {
-      console.log("responsesFromDb:", responsesFromDb);
       setResponses(responsesFromDb);
     }
   }, [isLoadingResponsesFromDb, responsesFromDb]);
 
-  useEffect(() => {
-    console.log("responses:", responses);
-  }, [responses]);
   // #endregion
 
   return (
@@ -234,6 +230,25 @@ const Form = () => {
             <RadioQuestionHorizontal
               response={responses[6]?.response ?? ""}
               onChangeResponse={onChangeResponse(6)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Question 8 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>What is your birthday?</CardTitle>
+            <CardDescription>Date</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Input
+              type="date"
+              value={responses[7]?.response ?? ""}
+              placeholder="Your answer"
+              onChange={onChangeResponse(7)}
+              className="w-[30%]"
             />
           </CardContent>
         </Card>

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { toast } from "./ui/use-toast";
+import { LoadingSpinner } from "./loading";
 
 type Props = {
   response: string;
@@ -9,6 +10,8 @@ type Props = {
 };
 
 const RadioQuestion = ({ response, onChangeResponse }: Props) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleChange = (value: string) => {
     onChangeResponse({
       target: { value },
@@ -23,6 +26,20 @@ const RadioQuestion = ({ response, onChangeResponse }: Props) => {
       duration: 5000,
     });
   };
+
+  useEffect(() => {
+    if (response) {
+      setIsLoading(false);
+    }
+  }, [response]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <>

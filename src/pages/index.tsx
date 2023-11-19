@@ -14,7 +14,6 @@ export default function Home() {
   const { mutate } = api.forms.create.useMutation({
     onSuccess: (data) => {
       // data is the argument to the onSuccess callback
-      console.log("onSuccess", data);
       router.push(`/form/${data.id}`);
       toast({
         variant: "success",
@@ -35,7 +34,6 @@ export default function Home() {
   });
 
   const createNewForm = () => {
-    console.log("createNewForm");
     mutate();
   };
 
@@ -101,9 +99,6 @@ export default function Home() {
 
 function AuthShowcase() {
   const { data: sessionData, status } = useSession();
-
-  console.log("sessionData: ", { sessionData });
-  console.log("status: ", { status });
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">

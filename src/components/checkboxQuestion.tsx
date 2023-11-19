@@ -74,18 +74,12 @@ const CheckBoxQuestion = ({ response, onChangeResponse }: Prop) => {
 
   useEffect(() => {
     if (response && response !== "") {
-      console.log("response:", response);
       const responseOptions = response.split(", ").map((optionLabel) => {
         return { id: optionLabel, label: optionLabel };
       });
-      console.log("responseOptions:", responseOptions);
       setSelectedOptions(responseOptions);
     }
   }, [response]);
-
-  useEffect(() => {
-    console.log("selectedOptions:", selectedOptions);
-  }, [selectedOptions]);
 
   return (
     <div>
