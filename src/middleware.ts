@@ -19,7 +19,12 @@ export function middleware(req: NextRequest) {
   ) {
     return NextResponse.next();
   }
-  const session = req.cookies.get("next-auth.session-token")?.value;
+  let session = req.cookies.get("next-auth.session-token")?.value;
+
+  if (!session) {
+    session = req.cookies.get("__Secure-next-auth.session-token")?.value;
+    console.log("Session", session);
+  }
 
   if (!session)
     return NextResponse.redirect(
