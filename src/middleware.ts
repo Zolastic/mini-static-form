@@ -1,5 +1,6 @@
 // export { default } from "next-auth/middleware"
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const matcher = "/((?!api|_next/static|_next/image|favicon.ico).*?$)";
@@ -9,7 +10,7 @@ export function middleware(req: NextRequest) {
     process.env.NEXTAUTH_URL,
     process.env.VERCEL_URL,
   );
-  const envURL = process.env.VERCEL_URL || process.env.NEXTAUTH_URL;
+  const envURL = process.env.VERCEL_URL ?? process.env.NEXTAUTH_URL;
   const uri = req.url.replace(envURL!, "");
   if (
     uri.match(matcher) === null ||
