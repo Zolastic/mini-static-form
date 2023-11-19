@@ -28,9 +28,7 @@ const RadioQuestion = ({ response, onChangeResponse }: Props) => {
   };
 
   useEffect(() => {
-    if (response) {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
   }, [response]);
 
   if (isLoading) {
