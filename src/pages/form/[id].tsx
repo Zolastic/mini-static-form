@@ -15,6 +15,7 @@ import { Input } from "~/components/ui/input";
 import CheckBoxQuestion from "~/components/checkboxQuestion";
 import RadioQuestion from "~/components/radioQuestion";
 import DropDownQuestion from "~/components/dropdownQuestion";
+import RadioQuestionHorizontal from "~/components/radioQuestionsHorizontal";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -222,7 +223,23 @@ const Form = () => {
           </CardContent>
         </Card>
       </div>
-      <div className="mb-10"></div>
+
+      {/* Question 7 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>Rate yourself from one to five</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-center p-10 pt-5">
+            <RadioQuestionHorizontal
+              response={responses[6]?.response ?? ""}
+              onChangeResponse={onChangeResponse(6)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mb-20"></div>
     </>
   );
 };

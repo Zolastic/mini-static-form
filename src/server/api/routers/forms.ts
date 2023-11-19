@@ -31,12 +31,12 @@ export const formsRouter = createTRPCRouter({
     const form = await ctx.db.form.create({
       data: {
         userId: ctx.session.user.id,
-        name: "Untitled",
+        name: "Untitled form",
         description: "",
       },
     });
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 9; i++) {
       await ctx.db.response.create({
         data: {
           formId: form.id,
