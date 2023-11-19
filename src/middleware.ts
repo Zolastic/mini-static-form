@@ -15,8 +15,10 @@ export function middleware(req: NextRequest) {
   if (
     uri.match(matcher) === null ||
     req.url.includes("signin") ||
-    req.url.includes("api/auth/callback")
+    req.url.includes("api/auth/callback") ||
+    req.url.includes("api/uploadthing")
   ) {
+    console.log("allow url", req.url);
     return NextResponse.next();
   }
   let session = req.cookies.get("next-auth.session-token")?.value;
@@ -26,11 +28,13 @@ export function middleware(req: NextRequest) {
     console.log("Session", session);
   }
 
-  if (!session)
+  console.log("protected url", req.url, session);
+  if (!session) {
+    console.log("redirecting to signin");
     return NextResponse.redirect(
       `${envURL}/api/auth/signin?callbackUrl=${encodeURIComponent(req.url)}`,
     );
-
+  }
   // If user is authenticated, continue.
   return NextResponse.next();
 }
