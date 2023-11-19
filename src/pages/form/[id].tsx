@@ -18,6 +18,7 @@ import DropDownQuestion from "~/components/dropdownQuestion";
 import RadioQuestionHorizontal from "~/components/radioQuestionsHorizontal";
 import FileUpload from "~/components/fileUpload";
 import Image from "next/image";
+import { LoadingPage } from "~/components/loading";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -117,6 +118,10 @@ const Form = () => {
   }, [isLoadingResponsesFromDb, responsesFromDb]);
 
   // #endregion
+
+  if (isLoadingFormFromDb || isLoadingResponsesFromDb) {
+    return <LoadingPage />;
+  }
 
   return (
     <>
