@@ -38,6 +38,17 @@ const FileUpload = (props: Props) => {
         //   setIsUploading(true);
         //   return files;
         // }}
+        onUploadError={
+          // setIsUploading(false);
+          (err) => {
+            toast({
+              variant: "destructive",
+              title: "File Upload Error",
+              description: err.message,
+              duration: 5000,
+            });
+          }
+        }
       />
       {/* <div
         className={
