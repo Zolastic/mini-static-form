@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
     process.env.NEXTAUTH_URL,
     process.env.VERCEL_URL,
   );
-  const envURL = process.env.VERCEL_URL ?? process.env.NEXTAUTH_URL;
+  const envURL = process.env.NEXTAUTH_URL;
   const uri = req.url.replace(envURL!, "");
   if (
     uri.match(matcher) === null ||
