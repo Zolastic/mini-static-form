@@ -4,7 +4,7 @@ import { createUploadthing, type FileRouter } from "uploadthing/next-legacy";
 
 const f = createUploadthing();
 
-const auth = async (_req: NextApiRequest, _res: NextApiResponse) => ({
+const auth = (_req: NextApiRequest, _res: NextApiResponse) => ({
   id: "fakeId",
 }); // Fake auth function
 
