@@ -16,6 +16,8 @@ import CheckBoxQuestion from "~/components/checkboxQuestion";
 import RadioQuestion from "~/components/radioQuestion";
 import DropDownQuestion from "~/components/dropdownQuestion";
 import RadioQuestionHorizontal from "~/components/radioQuestionsHorizontal";
+import FileUpload from "~/components/fileUpload";
+import Image from "next/image";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -216,6 +218,32 @@ const Form = () => {
               response={responses[4]?.response ?? ""}
               onChangeResponse={onChangeResponse(4)}
             />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Question 6 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>Upload cat pic 😊?</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-start space-x-5">
+            <FileUpload
+              response={responses[5]?.response ?? ""}
+              onChangeResponse={onChangeResponse(5)}
+            />
+            {responses[5]?.response ? (
+              <Image
+                src={responses[5]?.response ?? ""}
+                alt="cat pic"
+                width={80}
+                height={80}
+                className="rounded-full bg-gray-300"
+              />
+            ) : (
+              <div className="h-20 w-20 rounded-full bg-gray-300"></div>
+            )}
           </CardContent>
         </Card>
       </div>
