@@ -254,6 +254,25 @@ const Form = () => {
         </Card>
       </div>
 
+      {/* Question 9 */}
+      <div className="mx-96 mt-5">
+        <Card className="rounded border-0 border-l-[10px] border-muted-foreground">
+          <CardHeader>
+            <CardTitle>What time is it now?</CardTitle>
+            <CardDescription>Time</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Input
+              type="time"
+              value={responses[8]?.response ?? ""}
+              placeholder="Your answer"
+              onChange={onChangeResponse(8)}
+              className="w-[30%]"
+            />
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="mb-20"></div>
     </>
   );
