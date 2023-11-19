@@ -98,7 +98,7 @@ export default function Home() {
 }
 
 function AuthShowcase() {
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
