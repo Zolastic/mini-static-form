@@ -35,6 +35,7 @@ export const formsRouter = createTRPCRouter({
         description: "",
       },
     });
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     for (let i = 0; i < 9; i++) {
       await ctx.db.response.create({
@@ -47,7 +48,7 @@ export const formsRouter = createTRPCRouter({
       });
     }
 
-    return form;
+    return { form };
   }),
 
   updateName: protectedProcedure

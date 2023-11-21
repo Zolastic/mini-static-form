@@ -3,41 +3,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
-import { useRouter } from "next/navigation";
-import { toast } from "~/components/ui/use-toast";
+import { toast as sonnerToast } from "sonner";
+import { useRouter } from "next/router";
 import formImage from "../../public/form.png";
-import { LoadingSpinner } from "~/components/loading";
-
-export default function Home() {
+import { GetServerSideProps } from "next";
+import { getServerAuthSession } from "~/server/auth";
+import { db } from "~/server/db";
+import { Form } from "@prisma/client";
+type Props = {
+  forms: Form[];
+};
+export default function Home({ forms }: Props) {
   const router = useRouter();
 
-  const { data: forms, isLoading: isLoadingForms } =
-    api.forms.getByUserId.useQuery();
-  const { mutate } = api.forms.create.useMutation({
-    onSuccess: (data) => {
-      // data is the argument to the onSuccess callback
-      router.push(`/form/${data.id}`);
-      toast({
-        variant: "success",
-        title: "Form Created",
-        description: "You have successfully created a new form.",
-        duration: 5000,
-      });
-    },
-
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error Creating New Form",
-        description: error.message,
-        duration: 5000,
-      });
-    },
-  });
-
-  const createNewForm = () => {
-    mutate();
-  };
+  const createForm = api.forms.create.useMutation();
 
   return (
     <>
@@ -57,7 +36,17 @@ export default function Home() {
                 width={192}
                 height={192}
                 className="my-3 rounded border border-gray-300 hover:cursor-pointer hover:border-slate-900"
-                onClick={createNewForm}
+                onClick={() => {
+                  sonnerToast.promise(createForm.mutateAsync(), {
+                    success: ({ form }) => {
+                      // if you want to refresh the homepage to get the new form, use this: router.replace(router.asPath);
+                      router.push(`/form/${form.id}`);
+                      return "Form Created";
+                    },
+                    loading: "Creating Form...",
+                    error: "Error Creating Form",
+                  });
+                }}
               />
               <h1 className="text-muted">New form</h1>
             </div>
@@ -65,49 +54,58 @@ export default function Home() {
         </div>
         <div className="flex w-full flex-col items-start justify-center px-96 py-5">
           <h1 className="text-xl font-semibold">Recent Forms</h1>
-          {isLoadingForms ? (
-            <div className="mt-3 flex items-center justify-center">
-              <LoadingSpinner size={30} />
-            </div>
-          ) : (
-            <>
-              {forms?.length ? (
-                <div className="mt-3 flex flex-wrap items-start justify-center">
-                  {forms.map((form) => {
-                    return (
-                      <div
-                        key={form.id}
-                        className="mb-10 mr-10 flex flex-col rounded border hover:cursor-pointer hover:border-slate-900"
-                      >
-                        <Link href={`/form/${form.id}`}>
-                          <Image
-                            src={formImage.src}
-                            alt={form.name}
-                            width={192}
-                            height={192}
-                            className="border-b"
-                          />
-                        </Link>
-                        <h1 className="p-3 text-muted-foreground">
-                          {form.name}
-                        </h1>
-                      </div>
-                    );
-                  })}
+          <div className="mt-3 flex flex-wrap items-start justify-center">
+            {forms.map((form) => {
+              return (
+                <div
+                  key={form.id}
+                  className="mb-10 mr-10 flex w-[192px] flex-col rounded border hover:cursor-pointer hover:border-slate-900"
+                >
+                  <Link href={`/form/${form.id}`}>
+                    <Image
+                      src={formImage.src}
+                      alt={form.name}
+                      width={192}
+                      height={192}
+                      className="border-b"
+                    />
+                  </Link>
+                  <h1 className="truncate p-3 text-muted-foreground">
+                    {form.name}
+                  </h1>
                 </div>
-              ) : (
-                <div className="mt-3 flex flex-col items-center justify-center">
-                  <h1 className="text-muted-foreground">No form found</h1>
-                </div>
-              )}
-            </>
-          )}
+              );
+            })}
+          </div>
         </div>
         <AuthShowcase />
       </main>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerAuthSession(context);
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const forms = await db.form.findMany({
+    where: {
+      userId: session.user.id,
+    },
+  });
+  return {
+    props: {
+      forms,
+    },
+  };
+};
 
 function AuthShowcase() {
   const { data: sessionData } = useSession();
