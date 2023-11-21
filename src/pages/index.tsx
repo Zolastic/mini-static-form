@@ -37,10 +37,10 @@ export default function Home({ forms }: Props) {
                 height={192}
                 className="my-3 rounded border border-gray-300 hover:cursor-pointer hover:border-slate-900"
                 onClick={() => {
-                  void sonnerToast.promise(createForm.mutateAsync(), {
+                  sonnerToast.promise(createForm.mutateAsync(), {
                     success: ({ form }) => {
                       // if you want to refresh the homepage to get the new form, use this: router.replace(router.asPath);
-                      router.push(`/form/${form.id}`);
+                      router.push(`/form/${form.id}`).catch(console.error);
                       return "Form Created";
                     },
                     loading: "Creating Form...",
