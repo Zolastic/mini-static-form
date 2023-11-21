@@ -9,16 +9,16 @@ type Props = {
 };
 
 const FileUpload = (props: Props) => {
-  // const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <main className="flex h-20 w-[142.222222222] flex-col items-center justify-between rounded border px-5 pb-2">
       <UploadButton
-        // className={isUploading ? "hidden" : ""}
+        className={isUploading ? "hidden" : ""}
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
           // Do something with the response
-          // setIsUploading(false);
+          setIsUploading(false);
           console.log("files: ", res);
           res.forEach((file) => {
             props.onChangeResponse({
@@ -34,23 +34,21 @@ const FileUpload = (props: Props) => {
             duration: 5000,
           });
         }}
-        // onBeforeUploadBegin={(files: File[]) => {
-        //   setIsUploading(true);
-        //   return files;
-        // }}
-        onUploadError={
-          // setIsUploading(false);
-          (err) => {
-            toast({
-              variant: "destructive",
-              title: "File Upload Error",
-              description: err.message,
-              duration: 5000,
-            });
-          }
-        }
+        onBeforeUploadBegin={(files: File[]) => {
+          setIsUploading(true);
+          return files;
+        }}
+        onUploadError={(err) => {
+          setIsUploading(false);
+          toast({
+            variant: "destructive",
+            title: "File Upload Error",
+            description: err.message,
+            duration: 5000,
+          });
+        }}
       />
-      {/* <div
+      <div
         className={
           isUploading
             ? "flex h-20 w-[142.222222222]  items-center justify-center"
@@ -58,7 +56,7 @@ const FileUpload = (props: Props) => {
         }
       >
         <LoadingSpinner />
-      </div> */}
+      </div>
     </main>
   );
 };
