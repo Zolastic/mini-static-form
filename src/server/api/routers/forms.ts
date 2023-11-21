@@ -76,5 +76,14 @@ export const formsRouter = createTRPCRouter({
         },
       });
     }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.form.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });
-``;

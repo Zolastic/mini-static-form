@@ -19,6 +19,8 @@ import RadioQuestionHorizontal from "~/components/radioQuestionsHorizontal";
 import FileUpload from "~/components/fileUpload";
 import Image from "next/image";
 import { LoadingPage } from "~/components/loading";
+import { Trash } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 
 const Form = () => {
   const [form, setForm] = useState<Form | null>(null);
@@ -44,6 +46,8 @@ const Form = () => {
 
   const { mutate: mutateFormDescription } =
     api.forms.updateDescription.useMutation();
+
+  const deleteForm = api.forms.delete.useMutation();
 
   // #endregion
 
@@ -145,6 +149,29 @@ const Form = () => {
               />
             </CardDescription>
           </CardHeader>
+          <CardContent>
+            <div className="flex justify-end">
+              <Trash
+                size={20}
+                className="text-gray-400 hover:cursor-pointer"
+                onClick={() => {
+                  sonnerToast.promise(
+                    deleteForm.mutateAsync({
+                      id: typeof id === "string" ? id : "",
+                    }),
+                    {
+                      success: () => {
+                        router.push("/").catch(console.error);
+                        return "Form Deleted";
+                      },
+                      loading: "Deleting Form...",
+                      error: "Error Deleting Form",
+                    },
+                  );
+                }}
+              />
+            </div>
+          </CardContent>
         </Card>
       </div>
 
