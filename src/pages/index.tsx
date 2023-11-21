@@ -6,10 +6,10 @@ import { api } from "~/utils/api";
 import { toast as sonnerToast } from "sonner";
 import { useRouter } from "next/router";
 import formImage from "../../public/form.png";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { Form } from "@prisma/client";
+import type { Form } from "@prisma/client";
 type Props = {
   forms: Form[];
 };
@@ -37,7 +37,8 @@ export default function Home({ forms }: Props) {
                 height={192}
                 className="my-3 rounded border border-gray-300 hover:cursor-pointer hover:border-slate-900"
                 onClick={() => {
-                  sonnerToast.promise(createForm.mutateAsync(), {
+                  const promise = createForm.mutateAsync();
+                  sonnerToast.promise(promise, {
                     success: ({ form }) => {
                       // if you want to refresh the homepage to get the new form, use this: router.replace(router.asPath);
                       router.push(`/form/${form.id}`);
@@ -45,6 +46,9 @@ export default function Home({ forms }: Props) {
                     },
                     loading: "Creating Form...",
                     error: "Error Creating Form",
+                  });
+                  promise.catch((error) => {
+                    console.error("Error occurred:", error);
                   });
                 }}
               />
